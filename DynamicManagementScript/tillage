@@ -1,0 +1,90 @@
+/*
+2. Dynamic residue/tillage management
+This script is written in C# and is designed to be used within the Agricultural Production Systems sIMulator (APSIM), The script defines applies tillage within
+ specified dates of the simulation when the crop is ending and allows for changing the tillage parameter within a simulation cycles following the specified dates.
+These parameters include the fraction of residues to incorporate, the depth of tillage, and the start and end dates to apply the tillage. The model of the script 
+is linked to the “Clock” and “SurfaceOrganicMatter” models in APSIM.
+The script subscribes to the PlantEnding event, which is raised when the crop is ending. When this event is raised, the script checks if the current date is within 
+one of the specified date ranges. If it is, the script calls the Incorporate Incorporate  the residues based on the user specified parameters such as fraction and 
+depth at which residue could be incorporated for that phase of tillage event. Note that the script assumes that the Crop property has been set to a valid IPlant object 
+before the PlantEnding event is raised. If this is not the case, an exception will be thrown. because of this property, the script can be called within a rotation experiment involving various crops in the Paddock.
+*/
+using Models.Soils;
+using System;
+using Models.Core;
+using Models.PMF;
+using APSIM.Shared.Utilities;
+using Models.Surface;
+
+namespace Models
+{
+    [Serializable]
+    public class Script : Model
+    {
+        [Link] private Clock clock;
+        [Link] SurfaceOrganicMatter SOM;
+        
+        [Separator("This script applies tillage within specified dates of the simulation when the crop is ending")]
+       
+        [Description("Crop")]
+        public IPlant Crop { get; set; }
+        
+         [Separator("Phase 1")]
+        [Description("Fraction of Residues To Incorporate (0-1)")]
+        public double Fraction { get; set; }
+
+        [Description("Depth of Tillage (mm)")]
+        public double Depth { get; set; }
+        
+       [Separator("Specify dates to start residual removal")] 
+       [Description("Start Date to apply the manure (dd/mm/yyyy))")]
+       public DateTime StartResidueIncoporationDate { get; set; }
+       [Description("End Date to apply the manure (dd/mm/yyyy)")]
+       public DateTime EndStartResidueIncoporationDate { get; set; }
+       
+        [Separator("Phase 2")]
+       [Description("Fraction of Residues To Incorporate (0-1)")]
+        public double FractionTwo { get; set; }
+
+        [Description("Depth of Tillage (mm)")]
+        public double DepthTwo { get; set; }
+        
+       [Separator("Specify dates to start residual removal")] 
+       [Description("Start Date to apply the manure (dd/mm/yyyy))")]
+       public DateTime StartResidueIncoporationDate2 { get; set; }
+       [Description("End Date to apply the manure (dd/mm/yyyy)")]
+       public DateTime EndStartResidueIncoporationDateTwo { get; set; }
+       
+       [Separator("Phase 3")]
+       [Description("Fraction of Residues To Incorporate (0-1)")]
+        public double FractionThree { get; set; }
+
+        [Description("Depth of Tillage (mm)")]
+        public double DepthThree { get; set; }
+        
+       [Separator("Specify dates to start residual removal")] 
+       [Description("Start Date to apply the manure (dd/mm/yyyy))")]
+       public DateTime StartResidueIncoporationDateThree { get; set; }
+       [Description("End Date to apply the manure (dd/mm/yyyy)")]
+       public DateTime EndStartResidueIncoporationDateThree { get; set; }
+       [EventSubscribe("PlantEnding")]
+        private void OnEndCrop(object sender, EventArgs e)
+        {
+         
+            Model crop = sender as Model;
+            if (Crop != null && crop.Name.ToLower() == (Crop as IModel).Name.ToLower())
+            if ((clock.Today.Date >= StartResidueIncoporationDate.Date) && (clock.Today.Date <= EndStartResidueIncoporationDate.Date))
+            {
+            SOM.Incorporate(Fraction, Depth);
+            }
+            else if ((clock.Today.Date >= StartResidueIncoporationDate2.Date) && (clock.Today.Date <= EndStartResidueIncoporationDateTwo.Date))
+            {
+             SOM.Incorporate(FractionTwo, DepthTwo);
+            }
+            else if ((clock.Today.Date >= StartResidueIncoporationDateThree.Date) && (clock.Today.Date <= EndStartResidueIncoporationDateThree.Date))
+            {
+             SOM.Incorporate(FractionThree, DepthThree);
+            }
+        }
+    }
+}

@@ -1,0 +1,69 @@
+/*3. Fertilizer management
+This script written in C# was used in a simulation crop model where fertilizers was altered within a simulation cycle. The script applied fertilizers to the crop at 
+specific dates, which in our study were two dates were fertilizers were changed. The script used two fertilizer application phases, each with a different amount to be 
+applied. The crop to be fertilized is specified using the IPlant interface and these are entered by the user. The script subscribes to the “Sowing” event, which is triggered
+ when a crop such as corn or oats was sown. During the “Sowing” event, the script checks if the current date is within the specified start and end dates for each fertilizer
+ application phase. If the current date falls within the specified date range, the script applies the corresponding fertilizer to the crop using the Fertiliser.Apply()
+ method. Note that this script assumes that the Fertilizer class and the IPlant interface are already defined in other parts of the simulation model.
+*/
+using Models.Soils;
+using System;
+using Models.Core;
+using Models.PMF;
+namespace Models
+{
+    [Serializable]
+    public class Script : Model
+    {
+        [Link] Clock Clock;
+        [Link] Fertiliser Fertiliser;
+        
+        [Separator("This script is for applying fertilizers only at specified dates (fertilizers will be applying during sowing)")]
+        
+        [Description("Crop to be fertilised")]
+        public IPlant Crop { get; set; }
+        
+        [Separator("First phase of fertilizer application")]
+
+        [Description("Type of fertiliser to apply? ")] 
+        public Fertiliser.Types FertiliserType { get; set; }
+    
+        [Description("Amount of fertiliser to be applied (kg/ha)")]
+        public double Amount { get; set; }
+       [Separator("Specify dates for the application of this fertilizer")] 
+       [Description("Start Date to apply the specified fertilizers (dd/mm/yyyy))")]
+       public DateTime StartFertilizing { get; set; }
+       [Description("End Date to apply the specified fertilizers (dd/mm/yyyy)")]
+       public DateTime EndFertilizing { get; set; }
+       
+       [Separator("Second phase of fertilizer application")]
+       
+       [Description("Type of fertiliser to apply? ")] 
+        public Fertiliser.Types FertiliserTypeTwo { get; set; }
+    
+        [Description("Amount of fertiliser to be applied (kg/ha)")]
+        public double Amount2 { get; set; }
+       [Separator("Specify dates for the application of this fertilizer")] 
+       [Description("Start Date to apply the specified fertilizers (dd/mm/yyyy))")]
+       public DateTime StartFertilizingTwo { get; set; }
+       [Description("End Date to apply the specified fertilizers (dd/mm/yyyy)")]
+       public DateTime EndFertilizingTwo { get; set; }
+        
+        [EventSubscribe("Sowing")]
+        private void OnSowing(object sender, EventArgs e)
+        {
+            Model crop = sender as Model;
+            if (Crop != null && crop.Name.ToLower() == (Crop as IModel).Name.ToLower() )
+            if (Clock.Today.Date >= StartFertilizing.Date && Clock.Today.Date <= EndFertilizing.Date )
+            {
+            Fertiliser.Apply(Amount: Amount, Type: FertiliserType);
+          } 
+          else if (Clock.Today.Date >= StartFertilizingTwo.Date && Clock.Today.Date <= EndFertilizingTwo.Date )
+            {
+            Fertiliser.Apply(Amount: Amount2, Type: FertiliserTypeTwo);
+          } 
+        }
+       
+    }
+}
+ 
