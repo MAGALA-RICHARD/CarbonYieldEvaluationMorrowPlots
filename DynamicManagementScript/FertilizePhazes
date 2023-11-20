@@ -1,15 +1,15 @@
-/*3. Fertilizer management
-This script written in C# was used in a simulation crop model where fertilizers was altered within a simulation cycle. The script applied fertilizers to the crop at 
-specific dates, which in our study were two dates were fertilizers were changed. The script used two fertilizer application phases, each with a different amount to be 
-applied. The crop to be fertilized is specified using the IPlant interface and these are entered by the user. The script subscribes to the “Sowing” event, which is triggered
- when a crop such as corn or oats was sown. During the “Sowing” event, the script checks if the current date is within the specified start and end dates for each fertilizer
- application phase. If the current date falls within the specified date range, the script applies the corresponding fertilizer to the crop using the Fertiliser.Apply()
- method. Note that this script assumes that the Fertilizer class and the IPlant interface are already defined in other parts of the simulation model.
+/*
+This C# script is utilized in a crop simulation model where fertilizers are modified within a simulation cycle.  The script applied fertilizers to the crop at specific dates, which in our study were two dates were fertilizers were changed.
+The script used two fertilizer application phases, each with a different amount to be applied. he crop to maize or oats was sown. During the “Sowing” event, the script checks if the current date is within the specified start and end dates for each fertilizer application phase.
+If the current date falls within the specified date range, the script applies the corresponding fertilizer to the crop. 
 */
+
 using Models.Soils;
-using System;
-using Models.Core;
 using Models.PMF;
+using Models.Core;
+using System;
+
+
 namespace Models
 {
     [Serializable]
@@ -66,4 +66,3 @@ namespace Models
        
     }
 }
- 
